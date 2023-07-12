@@ -8,14 +8,28 @@ const {
   removeContact,
   addContact,
   updateContact,
-} = require("../../models/contacts");
+  updateStatusContact,
+} = require("../../controllers/contacts");
 
-router.route("/").get(listContacts).post(addContact);
+const {
+  checkContactById,
+  checkCreateContactData,
+  checkUpdateContactData,
+} = require("../../middlewares/contacts");
+
+const { protect } = require("../../middlewares/auth");
+
+router.use(protect);
+
+router.route("/").get(listContacts).post(checkCreateContactData, addContact);
+
+router.use("/:contactId", checkContactById);
 
 router
   .route("/:contactId")
   .get(getContactById)
   .delete(removeContact)
-  .put(updateContact);
+  .put(checkUpdateContactData, updateContact)
+  .patch(updateStatusContact);
 
 module.exports = router;
