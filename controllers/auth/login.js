@@ -10,11 +10,17 @@ exports.login = catchAsync(async (req, res) => {
 
   const user = await User.findOne({ email }).select("+password");
 
-  if (!user) throw new AppError(401, "Email or password is wrong");
+  if (!user) {
+    throw new AppError(401, "Email or password is wrong");
+  }
 
   const isValidPassword = await user.checkPassword(password, user.password);
 
   if (!isValidPassword) throw new AppError(401, "Email or password is wrong");
+
+  if (!user.verify) {
+    throw new AppError(401, "User is not verify!");
+  }
 
   const resDataUser = userSignInHandler(user);
 

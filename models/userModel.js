@@ -23,6 +23,14 @@ const userSchema = mongoose.Schema(
       default: null,
     },
     avatarURL: String,
+
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
   },
   {
     versionKey: false,
@@ -38,7 +46,7 @@ userSchema.pre("save", async function (next) {
 
   if (!this.isModified("password")) return next();
 
-  // hash passwd only when passwd changed
+  // hash passwd only when pass changed
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 

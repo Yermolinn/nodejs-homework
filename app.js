@@ -34,13 +34,16 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/contacts", contactsRouter);
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Not found" });
+app.all("*", (req, res) => {
+  res.status(404).json({
+    message: "Not found",
+  });
 });
 
 app.use((err, req, res, next) => {
-  res.status(500).json({
+  res.status(err.status || 500).json({
     message: err.message,
+    // stack: err.stack,
   });
 });
 
